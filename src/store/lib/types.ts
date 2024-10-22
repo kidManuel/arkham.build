@@ -115,6 +115,30 @@ export type Selection = OptionSelection | FactionSelection | DeckSizeSelection;
 // selections, keyed by their `id`, or if not present their `name`.
 export type Selections = Record<string, Selection>;
 
+export type UnformattedChartInfo = {
+  costCurve: ChartableData;
+  skillIcons: {
+    skill_agility: number;
+    skill_combat: number;
+    skill_intellect: number;
+    skill_willpower: number;
+    skill_wild: number;
+  };
+};
+
+export type SkillIcon = keyof UnformattedChartInfo["skillIcons"];
+
+export type DecksChartInfo = {
+  costCurve: ChartableData;
+  skillIcons: ChartableData<SkillIcon>;
+};
+
+// Victory chart's accepted data format
+export type ChartableData<T extends string | number = number> = {
+  x: T;
+  y: number;
+}[];
+
 export type ResolvedDeck = Omit<Deck, "sideSlots"> & {
   attachments: AttachmentQuantities | undefined;
   availableAttachments: AttachableDefinition[];
@@ -138,6 +162,7 @@ export type ResolvedDeck = Omit<Deck, "sideSlots"> & {
     xpRequired: number;
     deckSize: number;
     deckSizeTotal: number;
+    charts: DecksChartInfo;
   };
   hasExtraDeck: boolean;
   hasReplacements: boolean;

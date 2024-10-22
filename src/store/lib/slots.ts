@@ -4,6 +4,7 @@ import type { Metadata } from "@/store/slices/metadata.types";
 import {
   countExperience,
   decodeExileSlots,
+  getCardChartableData,
   isSpecialCard,
 } from "@/utils/card-utils";
 import { range } from "@/utils/range";
@@ -13,7 +14,10 @@ import type {
   CardWithRelations,
   Customizations,
   DeckMeta,
+  DecksChartInfo,
   ResolvedDeck,
+  SkillIcon,
+  UnformattedChartInfo,
 } from "./types";
 
 export function decodeSlots(
@@ -31,6 +35,17 @@ export function decodeSlots(
     ignoreDeckLimitSlots: {},
     extraSlots: {},
     exileSlots: {},
+  };
+
+  const chartableInfo: UnformattedChartInfo = {
+    costCurve: [],
+    skillIcons: {
+      skill_agility: 0,
+      skill_combat: 0,
+      skill_intellect: 0,
+      skill_willpower: 0,
+      skill_wild: 0,
+    },
   };
 
   let deckSize = 0;
@@ -62,6 +77,8 @@ export function decodeSlots(
           0,
         );
       }
+
+      getCardChartableData(card.card, quantity, chartableInfo);
     }
   }
 
@@ -118,11 +135,14 @@ export function decodeSlots(
     }
   }
 
+  const chartInfo: DecksChartInfo = formatChartInfo(chartableInfo);
+
   return {
     cards,
     deckSize,
     deckSizeTotal,
     xpRequired,
+    chartInfo,
   };
 }
 
@@ -161,4 +181,22 @@ export function encodeExtraSlots(slots: Record<string, number>) {
   );
 
   return entries.length ? entries.join(",") : undefined;
+}
+
+function formatChartInfo(info: UnformattedChartInfo): DecksChartInfo {
+  const { costCurve, skillIcons: unformattedSkillIcons } = info;
+
+  // Account for gaps in card costs.
+  for (const [index, costColumn] of costCurve.entries()) {
+    if (!costColumn) info.costCurve[index] = { x: index, y: 0 };
+  }
+
+  const skillIcons = Object.keys(unformattedSkillIcons).map((skill) => {
+    return {
+      x: skill as SkillIcon,
+      y: unformattedSkillIcons[skill as SkillIcon],
+    };
+  });
+
+  return { costCurve, skillIcons };
 }

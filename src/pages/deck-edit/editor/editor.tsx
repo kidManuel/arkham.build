@@ -1,17 +1,17 @@
 import { DeckSummary } from "@/components/deck-summary";
+import { DeckTools } from "@/components/deck-tools/deck-tools";
+// import { DeckTools } from "@/components/deck-display/deck-tools/deck-tools";
 import { DecklistGroups } from "@/components/decklist/decklist-groups";
 import { DecklistSection } from "@/components/decklist/decklist-section";
 import { Scroller } from "@/components/ui/scroller";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { DeckValidationResult } from "@/store/lib/deck-validation";
-import type { Tab } from "@/store/slices/deck-edits.types";
-
-import css from "./editor.module.css";
-
 import type { ResolvedDeck } from "@/store/lib/types";
 import type { Card } from "@/store/services/queries.types";
+import type { Tab } from "@/store/slices/deck-edits.types";
 import { useAccentColor } from "@/utils/use-accent-color";
 import { EditorActions } from "./editor-actions";
+import css from "./editor.module.css";
 import { InvestigatorListcard } from "./investigator-listcard";
 import { MetaEditor } from "./meta-editor";
 import { MoveToMainDeck } from "./move-to-main-deck";
@@ -39,7 +39,7 @@ export function Editor(props: Props) {
 
       <Tabs
         className={css["editor-tabs"]}
-        length={deck.hasExtraDeck ? 4 : 3}
+        length={deck.hasExtraDeck ? 5 : 4}
         onValueChange={(value: string) => {
           onTabChange(value as Tab);
         }}
@@ -59,6 +59,9 @@ export function Editor(props: Props) {
           )}
           <TabsTrigger value="meta" data-testid="editor-tab-meta">
             Meta
+          </TabsTrigger>
+          <TabsTrigger value="utils" data-testid="editor-tab-meta">
+            Utils
           </TabsTrigger>
         </TabsList>
 
@@ -127,6 +130,10 @@ export function Editor(props: Props) {
 
           <TabsContent value="meta">
             <MetaEditor deck={deck} />
+          </TabsContent>
+
+          <TabsContent value="utils">
+            <DeckTools deck={deck} />
           </TabsContent>
         </Scroller>
         <EditorActions currentTab={currentTab} deck={deck} />
