@@ -29,7 +29,6 @@ export function resolveDeck(
   deck: Deck,
 ): ResolvedDeck {
   const deckMeta = decodeDeckMeta(deck);
-
   // some decks on arkhamdb are created for the replacement investigator, normalize.
   // this only seems to be the case for carolyn fern?
   const investigatorCode =
@@ -90,14 +89,15 @@ export function resolveDeck(
 
   const customizations = decodeCustomizations(deckMeta, metadata);
 
-  const { cards, deckSize, deckSizeTotal, xpRequired } = decodeSlots(
-    deck,
-    extraSlots,
-    metadata,
-    lookupTables,
-    investigator,
-    customizations,
-  );
+  const { cards, deckSize, deckSizeTotal, xpRequired, chartsInfo } =
+    decodeSlots(
+      deck,
+      extraSlots,
+      metadata,
+      lookupTables,
+      investigator,
+      customizations,
+    );
 
   const availableAttachments = Object.entries(ATTACHABLE_CARDS).reduce<
     AttachableDefinition[]
@@ -131,6 +131,7 @@ export function resolveDeck(
       deckSize,
       deckSizeTotal,
       xpRequired: xpRequired,
+      charts: chartsInfo,
     },
     tabooSet: deck.taboo_id ? metadata.tabooSets[deck.taboo_id] : undefined,
   } as ResolvedDeck;

@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useDialogContext } from "@/components/ui/dialog.hooks";
 import { Modal } from "@/components/ui/modal";
+import { useStore } from "@/store";
 import type { ResolvedDeck } from "@/store/lib/types";
+import { ChartAreaIcon, Rows3Icon } from "lucide-react";
 import { useCallback } from "react";
+import css from "./investigator-listcard.module.css";
 
 type Props = {
   deck: ResolvedDeck;
@@ -33,9 +36,12 @@ function InvestigatorListcardInner({ deck }: Props) {
       deck.investigatorBack.card.parallel,
   };
 
+  const usingDeckTools = useStore((state) => state.ui.usingDeckTools);
+  const toggleTools = useStore((state) => state.setUsingDeckTools);
+
   return (
-    <>
-      <DialogTrigger>
+    <div className={css["investigator-container"]}>
+      <DialogTrigger className={css["trigger-container"]}>
         <ListCard
           card={card}
           disableModalOpen
@@ -75,6 +81,13 @@ function InvestigatorListcardInner({ deck }: Props) {
           />
         </Modal>
       </DialogContent>
-    </>
+      <Button
+        tooltip={usingDeckTools ? "Card list" : "View deck charts"}
+        iconOnly
+        onClick={() => toggleTools(!usingDeckTools)}
+      >
+        {usingDeckTools ? <Rows3Icon /> : <ChartAreaIcon />}
+      </Button>
+    </div>
   );
 }

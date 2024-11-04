@@ -2,6 +2,7 @@ import { ListLayout } from "@//layouts/list-layout";
 import { Attachments } from "@/components/attachments/attachments";
 import { CardListContainer } from "@/components/card-list/card-list-container";
 import { CardModalProvider } from "@/components/card-modal/card-modal-context";
+import { DeckTools } from "@/components/deck-tools/deck-tools";
 import { DecklistValidation } from "@/components/decklist/decklist-validation";
 import { Filters } from "@/components/filters/filters";
 import { Button } from "@/components/ui/button";
@@ -117,8 +118,11 @@ function DeckEditInner({ deck }: { deck: ResolvedDeck }) {
     [deck, currentTab],
   );
 
-  const updateCardQuantity = useStore((state) => state.updateCardQuantity);
+  const setUsingDeckTools = useStore((state) => state.setUsingDeckTools);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Only once on mount
+  useEffect(() => setUsingDeckTools(false), []);
 
+  const updateCardQuantity = useStore((state) => state.updateCardQuantity);
   const validation = useStore((state) => selectDeckValid(state, deck));
 
   useDocumentTitle(
@@ -157,6 +161,7 @@ function DeckEditInner({ deck }: { deck: ResolvedDeck }) {
           validation={validation}
         />
       }
+      extras={<DeckTools deck={deck} />}
       sidebarWidthMax="var(--sidebar-width-two-col)"
     >
       {(props) => (

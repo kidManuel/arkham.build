@@ -1,4 +1,4 @@
-import type { AttachableDefinition } from "@/utils/constants";
+import { type AttachableDefinition, FACTION_ORDER } from "@/utils/constants";
 import type {
   Card,
   Cycle,
@@ -116,6 +116,31 @@ export type Selection = OptionSelection | FactionSelection | DeckSizeSelection;
 // selections, keyed by their `id`, or if not present their `name`.
 export type Selections = Record<string, Selection>;
 
+export const SKILL_ICONS = [
+  "skill_agility",
+  "skill_combat",
+  "skill_intellect",
+  "skill_willpower",
+  "skill_wild",
+] as const;
+export const FACTION_NAME = FACTION_ORDER.filter(
+  (entry) => !(entry === "multiclass" || entry === "mythos"),
+);
+export type SkillIcon = (typeof SKILL_ICONS)[number];
+export type FactionName = (typeof FACTION_NAME)[number];
+
+export type DecksChartInfo = {
+  costCurve: ChartableData;
+  skillIcons: ChartableData<SkillIcon>;
+  factions: ChartableData<FactionName>;
+};
+
+// Victory chart's accepted data format
+export type ChartableData<T extends string | number = number> = {
+  x: T;
+  y: number;
+}[];
+
 export type ResolvedDeck = Omit<Deck, "sideSlots"> & {
   attachments: AttachmentQuantities | undefined;
   availableAttachments: AttachableDefinition[];
@@ -139,6 +164,7 @@ export type ResolvedDeck = Omit<Deck, "sideSlots"> & {
     xpRequired: number;
     deckSize: number;
     deckSizeTotal: number;
+    charts: DecksChartInfo;
   };
   hasExtraDeck: boolean;
   hasReplacements: boolean;
