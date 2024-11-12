@@ -121,20 +121,26 @@ export function DeckSummary(props: Props) {
                 </h4>
               </div>
               <div className={css["stats"]}>
-                <strong data-testid="deck-summary-xp">
-                  <i className="icon-xp-bold" />
-                  {deck.stats.xpRequired} XP
-                </strong>
-                {!!deck.xp && (
-                  <strong data-testid="deck-xp-earned">
-                    <i className="icon-upgrade" />
-                    {deck.xp + (deck.xp_adjustment ?? 0)} XP
+                <DefaultTooltip tooltip="XP required">
+                  <strong data-testid="deck-summary-xp">
+                    <i className="icon-xp-bold" />
+                    {deck.stats.xpRequired} XP
                   </strong>
+                </DefaultTooltip>
+                {!!deck.xp && (
+                  <DefaultTooltip tooltip="Unspent XP">
+                    <strong data-testid="deck-xp-earned">
+                      <i className="icon-upgrade" />
+                      {deck.xp + (deck.xp_adjustment ?? 0)} XP
+                    </strong>
+                  </DefaultTooltip>
                 )}
-                <strong data-testid="deck-summary-size">
-                  <i className="icon-card-outline-bold" />×{" "}
-                  {deck.stats.deckSize} ({deck.stats.deckSizeTotal})
-                </strong>
+                <DefaultTooltip tooltip="Deck Size">
+                  <strong data-testid="deck-summary-size">
+                    <i className="icon-card-outline-bold" />×{" "}
+                    {deck.stats.deckSize} ({deck.stats.deckSizeTotal})
+                  </strong>
+                </DefaultTooltip>
               </div>
             </div>
           </div>

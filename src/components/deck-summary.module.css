@@ -75,6 +75,11 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.25rem;
+  line-height: 1rem;
+
+  & i[class^="icon-"] {
+    font-size: var(--text-lg);
+  }
 }
 
 .stats > * {
